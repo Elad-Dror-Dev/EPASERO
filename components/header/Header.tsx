@@ -33,10 +33,15 @@ const Header = () => {
   }, [menuOpen])
 
   return (
+    // Spec §4.1 gives the nav heights as an example ("e.g. 80px → 56px") but the
+    // logo sizes as hard values (80px at rest, 60px compressed). Those cannot
+    // both hold: a 60px logo does not fit inside a 56px bar. The logo is the
+    // point of that requirement ("increase the logo size"), so the bar grows to
+    // accommodate it and still visibly compresses on scroll.
     <header
       className={cn(
         'border-brand-line bg-brand-white fixed top-0 left-0 z-[1000] w-full border-b transition-all duration-300',
-        compressed ? 'h-14' : 'h-20',
+        compressed ? 'h-[72px]' : 'h-24',
       )}
     >
       <div className="mx-auto flex h-full max-w-[1440px] items-center justify-between gap-6 px-4 md:px-10">
@@ -48,7 +53,8 @@ const Header = () => {
             priority
             className={cn(
               'w-auto transition-all duration-300',
-              compressed ? 'max-h-[44px]' : 'max-h-[60px]',
+              // Spec §4.1: 60px compressed, 80px at rest.
+              compressed ? 'max-h-[60px]' : 'max-h-[80px]',
             )}
           />
         </Link>
@@ -99,7 +105,13 @@ const Header = () => {
 
       {/* Mobile menu */}
       {menuOpen ? (
-        <div className="bg-brand-white fixed inset-x-0 top-14 bottom-0 z-[999] flex flex-col gap-8 px-6 py-10 lg:hidden">
+        <div
+          className={cn(
+            'bg-brand-white fixed inset-x-0 bottom-0 z-[999] flex flex-col gap-8 px-6 py-10 transition-all duration-300 lg:hidden',
+            // Sit directly beneath the bar, whichever height it currently is.
+            compressed ? 'top-[72px]' : 'top-24',
+          )}
+        >
           <ul className="flex flex-col gap-6">
             {NAV_LINKS.map(({ label, href }) => (
               <li key={label}>

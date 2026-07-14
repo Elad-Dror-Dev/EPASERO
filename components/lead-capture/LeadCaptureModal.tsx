@@ -21,6 +21,15 @@ const DELAY_MS = 6000
 /** The gated asset. Supplied by the client as "Interior Design Guide". */
 const GUIDE_PATH = '/guides/interior-design-guide-2026.pdf'
 
+/**
+ * Spec §3.2 asks for three catalogue images. The brief did not say which, so
+ * these are three completed projects from the portfolio. Swap the paths to
+ * change them — nothing else depends on the choice.
+ */
+const SHOWCASE_IMAGES = ['/portfolio/1/1.webp', '/portfolio/15/1.webp', '/portfolio/2/1.webp']
+
+const SLIDE_MS = 3500
+
 type Errors = Partial<Record<'name' | 'email' | 'phone' | 'consent' | 'form', string>>
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -33,6 +42,14 @@ const LeadCaptureModal = () => {
   const [submitting, setSubmitting] = useState(false)
   const [errors, setErrors] = useState<Errors>({})
   const [form, setForm] = useState({ name: '', email: '', phone: '', consent: false })
+  const [slide, setSlide] = useState(0)
+
+  // Cycle the showcase images while the modal is open.
+  useEffect(() => {
+    if (!open) return
+    const id = setInterval(() => setSlide(s => (s + 1) % SHOWCASE_IMAGES.length), SLIDE_MS)
+    return () => clearInterval(id)
+  }, [open])
 
   // Homepage only, once per session, after a delay so the hero lands first.
   //
@@ -150,15 +167,21 @@ const LeadCaptureModal = () => {
           <X size={22} />
         </button>
 
-        {/* Visual half — hidden on mobile so the form is never pushed off-screen. */}
+        {/* Visual half — three catalogue images (spec §3.2), cross-fading.
+            Hidden on mobile so the form is never pushed off-screen. */}
         <div className="relative hidden min-h-[460px] md:block">
-          <Image
-            src="/portfolio/1/1.webp"
-            alt="Epasero interior"
-            fill
-            sizes="(max-width: 768px) 0px, 450px"
-            className="object-cover"
-          />
+          {SHOWCASE_IMAGES.map((src, i) => (
+            <Image
+              key={src}
+              src={src}
+              alt=""
+              fill
+              sizes="(max-width: 768px) 0px, 450px"
+              className={`object-cover transition-opacity duration-1000 ${
+                i === slide ? 'opacity-100' : 'opacity-0'
+              }`}
+            />
+          ))}
         </div>
 
         <div className="flex flex-col justify-center gap-5 p-8 md:p-10">
@@ -242,7 +265,8 @@ const LeadCaptureModal = () => {
 
             {errors.form ? <p className="text-xs text-red-600">{errors.form}</p> : null}
 
-            <Button type="submit" disabled={submitting} className="w-full">
+            {/* Spec §3.2: full-width, white background, black text. */}
+            <Button type="submit" variant="light" disabled={submitting} className="w-full">
               {submitting ? 'Sending…' : 'Download'}
             </Button>
           </form>

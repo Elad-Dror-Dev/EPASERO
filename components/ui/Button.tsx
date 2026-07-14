@@ -12,6 +12,9 @@ const variants = {
   outline: 'border border-brand-brown text-brand-brown hover:bg-brand-brown hover:text-brand-white',
   /** For use on dark/photographic backgrounds. */
   invert: 'border border-brand-white text-brand-white hover:bg-brand-white hover:text-brand-black',
+  /** White fill, black text — the lead-capture DOWNLOAD button (spec §3.2). */
+  light:
+    'bg-brand-white text-brand-black border border-brand-black hover:bg-brand-black hover:text-brand-white',
 } as const
 
 type Variant = keyof typeof variants

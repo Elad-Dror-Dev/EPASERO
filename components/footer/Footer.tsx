@@ -12,7 +12,10 @@ const Footer = () => {
   const year = new Date().getFullYear()
 
   return (
-    <footer className="bg-brand-black pt-section text-brand-white px-4 pb-10 md:px-10">
+    // Extra bottom padding on small screens keeps the footer's links clear of the
+    // fixed WhatsApp button (56px + 24px offset), which would otherwise sit on top
+    // of them — spec §2 requires it not to obscure content on mobile.
+    <footer className="bg-brand-black pt-section text-brand-white px-4 pb-28 md:px-10 md:pb-10">
       <div className="mx-auto max-w-[1316px]">
         <div className="grid gap-12 md:grid-cols-[1.6fr_1fr_1fr] md:gap-16">
           {/* Logo + description */}

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { Star } from 'lucide-react'
+import { FcGoogle } from 'react-icons/fc'
 import Container from '@/components/container/Container'
 import SectionHeading from '@/components/ui/SectionHeading'
 
@@ -54,7 +55,15 @@ const ReviewCard = ({ review }: { review: Review }) => {
         ) : null}
       </p>
 
-      <p className="h1-label text-brand-black mt-auto">{review.author}</p>
+      {/* Spec §4.7: each card shows a Google badge so the review is visibly
+          third-party rather than self-authored. */}
+      <div className="mt-auto flex items-center justify-between gap-3">
+        <p className="h1-label text-brand-black">{review.author}</p>
+        <span className="text-brand-muted flex items-center gap-1.5 text-[11px]">
+          <FcGoogle size={14} />
+          Google
+        </span>
+      </div>
     </li>
   )
 }
