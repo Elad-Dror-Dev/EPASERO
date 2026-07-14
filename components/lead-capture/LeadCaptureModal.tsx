@@ -35,12 +35,31 @@ const LeadCaptureModal = () => {
   const [form, setForm] = useState({ name: '', email: '', phone: '', consent: false })
 
   // Homepage only, once per session, after a delay so the hero lands first.
+  //
+  // The popup stays shut unless the guide PDF is actually on the server. Without
+  // this check it would take a real prospect's name, email and phone, push them
+  // to HubSpot, and then hand back a 404 — the worst possible first impression.
+  // Drop the file at GUIDE_PATH and the popup enables itself; no code change.
   useEffect(() => {
     if (pathname !== '/') return
     if (sessionStorage.getItem(SESSION_KEY)) return
 
-    const timer = setTimeout(() => setOpen(true), DELAY_MS)
-    return () => clearTimeout(timer)
+    let timer: ReturnType<typeof setTimeout>
+    let cancelled = false
+
+    fetch(GUIDE_PATH, { method: 'HEAD' })
+      .then(res => {
+        if (cancelled || !res.ok) return
+        timer = setTimeout(() => setOpen(true), DELAY_MS)
+      })
+      .catch(() => {
+        /* guide unavailable — leave the popup closed */
+      })
+
+    return () => {
+      cancelled = true
+      clearTimeout(timer)
+    }
   }, [pathname])
 
   const dismiss = useCallback(() => {

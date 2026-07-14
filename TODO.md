@@ -61,3 +61,11 @@ Copy `.env.example` to `.env.local` and fill in:
   *style*. Emitting a real `<h1>` per section would put six of them on the homepage and
   break the heading outline for search engines. Each page has exactly one `<h1>` (the hero);
   section labels use the `.h1-label` class and look identical.
+
+## Popup safety guard
+
+The lead-capture popup will not open unless `public/guides/interior-design-guide-2026.pdf`
+actually exists (it does a HEAD request before showing). This prevents it from taking a real
+prospect's name, email and phone, pushing them to HubSpot, and then handing back a 404.
+
+Drop the guide PDF at that exact path and the popup enables itself — no code change needed.
