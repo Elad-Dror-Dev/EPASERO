@@ -1,91 +1,123 @@
 'use client'
 
-import React, { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import logo from '@/public/header-logo.svg'
+import { Menu, X } from 'lucide-react'
 import logoBlack from '@/public/logo-black.svg'
-import burger from '@/public/burger-menu.svg'
-import Container from '../container/Container'
-import MobileMenu from './MobileMenu'
-import { navLinks, WHATSAPP_NUMBER, WHATSAPP_MESSAGE } from './config'
+import { NAV_LINKS } from '@/lib/site'
+import SocialIcons from '@/components/ui/SocialIcons'
 import { cn } from '@/lib/utils'
-import { usePathname } from 'next/navigation'
-import { smoothScrollToSection } from '@/lib/smoothScroll'
 
-export default function Header() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const page = usePathname()
-  const urlPortfolio = '/portfolio/'
-  const isBlackLogo = page.includes(urlPortfolio) && page.length > urlPortfolio.length
+/**
+ * Spec §4.1: fixed to the top at all times and never hides. On scroll it
+ * compresses (80px → 56px) rather than disappearing.
+ */
+const Header = () => {
+  const [compressed, setCompressed] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
 
-  const handleWhatsAppClick = () => {
-    const encodedMessage = encodeURIComponent(WHATSAPP_MESSAGE)
-    const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER.replace(/[^0-9]/g, '')}?text=${encodedMessage}`
-    window.open(whatsappUrl, '_blank')
-  }
+  useEffect(() => {
+    const onScroll = () => setCompressed(window.scrollY > 40)
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
+  // Stop the page scrolling underneath an open mobile menu.
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? 'hidden' : ''
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [menuOpen])
 
   return (
-    <>
-      <header className={cn('absolute z-50 max-h-[76px] w-full', 'pt-5')}>
-        <Container className="max-w-[1318px]">
-          <div className={cn('mx-auto flex items-center justify-between')}>
-            <Link href="/" className="cursor-pointer">
-              <Image
-                src={isBlackLogo ? logoBlack : logo}
-                alt="Logo"
-                width={102}
-                height={87}
-                className="w-[112px]"
-              />
-            </Link>
+    <header
+      className={cn(
+        'border-brand-line bg-brand-white fixed top-0 left-0 z-[1000] w-full border-b transition-all duration-300',
+        compressed ? 'h-14' : 'h-20',
+      )}
+    >
+      <div className="mx-auto flex h-full max-w-[1440px] items-center justify-between gap-6 px-4 md:px-10">
+        {/* Logo — links home; on the homepage this returns the user to the top. */}
+        <Link href="/" aria-label="Epasero Contracting — home" className="flex items-center">
+          <Image
+            src={logoBlack}
+            alt="Epasero Contracting"
+            priority
+            className={cn(
+              'w-auto transition-all duration-300',
+              compressed ? 'max-h-[44px]' : 'max-h-[60px]',
+            )}
+          />
+        </Link>
 
-            <div className="flex items-center">
-              <nav className="hidden gap-3 md:flex">
-                {navLinks.map((link, index) =>
-                  link.isWhatsApp ? (
-                    <button
-                      key={index}
-                      onClick={handleWhatsAppClick}
-                      className={cn(
-                        'flex h-[52px] cursor-pointer items-center rounded-[10px] px-5 text-base leading-[105%] font-bold text-white transition',
-                        'bg-[#7C6858] hover:bg-[#8C7868]',
-                      )}
-                    >
-                      {link.label}
-                    </button>
-                  ) : (
-                    <Link
-                      key={index}
-                      prefetch={link.href.length > 1}
-                      href={link.href}
-                      onClick={e => smoothScrollToSection(e, link.id)}
-                      className={cn(
-                        'flex h-[52px] items-center rounded-[10px] px-5 text-base leading-[105%] font-bold text-white transition',
-                        'bg-[rgba(127,127,118,0.3)] opacity-90 hover:bg-[rgba(127,127,118,0.4)]',
-                      )}
-                    >
-                      {link.label}
-                    </Link>
-                  ),
-                )}
-              </nav>
-
-              <div className="flex items-center gap-1.5 lg:gap-2">
-                <button
-                  type="button"
-                  onClick={() => setIsMenuOpen(true)}
-                  className="flex h-10 cursor-pointer items-center justify-center rounded-full text-base text-white transition hover:opacity-80 md:hidden"
+        {/* Desktop nav */}
+        <nav className="hidden items-center gap-8 lg:flex">
+          <ul className="flex items-center gap-8">
+            {NAV_LINKS.map(({ label, href }) => (
+              <li key={label}>
+                <Link
+                  href={href}
+                  className="text-brand-black hover:text-brand-brown text-sm font-medium transition-colors duration-300"
                 >
-                  <Image src={burger} alt="" />
-                </button>
+                  {label}
+                </Link>
+              </li>
+            ))}
+          </ul>
 
-                <MobileMenu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
-              </div>
-            </div>
-          </div>
-        </Container>
-      </header>
-    </>
+          <SocialIcons />
+
+          <Link
+            href="/contact"
+            className="rounded-brand bg-brand-brown text-brand-white hover:bg-brand-brown-dark px-5 py-2.5 text-sm font-semibold transition-colors duration-300"
+          >
+            Let&apos;s Connect
+          </Link>
+        </nav>
+
+        {/* Mobile: keep the Let's Connect CTA outside the hamburger. */}
+        <div className="flex items-center gap-3 lg:hidden">
+          <Link
+            href="/contact"
+            className="rounded-brand bg-brand-brown text-brand-white px-4 py-2 text-xs font-semibold"
+          >
+            Let&apos;s Connect
+          </Link>
+          <button
+            onClick={() => setMenuOpen(v => !v)}
+            aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={menuOpen}
+            className="text-brand-black"
+          >
+            {menuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile menu */}
+      {menuOpen ? (
+        <div className="bg-brand-white fixed inset-x-0 top-14 bottom-0 z-[999] flex flex-col gap-8 px-6 py-10 lg:hidden">
+          <ul className="flex flex-col gap-6">
+            {NAV_LINKS.map(({ label, href }) => (
+              <li key={label}>
+                <Link
+                  href={href}
+                  onClick={() => setMenuOpen(false)}
+                  className="h2-display text-brand-black"
+                >
+                  {label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+          <SocialIcons size={20} />
+        </div>
+      ) : null}
+    </header>
   )
 }
+
+export default Header

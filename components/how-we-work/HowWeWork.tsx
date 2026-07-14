@@ -1,232 +1,110 @@
 'use client'
 
-import Image from 'next/image'
-import { motion, Variants } from 'framer-motion'
-import { useInView } from 'framer-motion'
-import { useRef } from 'react'
+import { useState } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
 import Container from '@/components/container/Container'
+import SectionHeading from '@/components/ui/SectionHeading'
+import { cn } from '@/lib/utils'
 
-interface WorkItem {
-  number: string
-  title: string
-  description: string
-}
-
-const workItems: WorkItem[] = [
+/**
+ * Spec §4.5 — four cards in a row. Clicking one opens a panel *below the whole
+ * row*, spanning all four columns, rather than expanding the card in place.
+ */
+const STEPS = [
   {
-    number: '01',
-    title: 'Tailored Layouts',
-    description: 'Designed around your lifestyle',
+    label: '01 / The Brief',
+    summary: 'Understanding Precedes Design',
+    detail:
+      'The process begins with an in-depth dialogue, centred on lifestyle, spatial expectations, and long-term vision. This stage establishes the intellectual and emotional framework of the project.',
   },
   {
-    number: '02',
-    title: 'Efficiently Built',
-    description: 'Optimized process and materials',
+    label: '02 / The Design',
+    summary: 'Custom-made Design',
+    detail:
+      'Concepts are translated into detailed visualisations, material studies, and spatial compositions. Each element is custom-made, developed through a process of careful refinement to achieve resolution at both macro and micro levels.',
   },
   {
-    number: '03',
-    title: 'Transparent Pricing',
-    description: 'Clear costs from day one',
+    label: '03 / The Build',
+    summary: 'Executed with Precision',
+    detail:
+      'Construction is approached as a direct continuation of the design process. Craftsmanship, coordination, and technical accuracy remain central throughout.',
+  },
+  {
+    label: '04 / The Handover',
+    summary: 'Delivered as Intended',
+    detail:
+      'The completed space reflects a precise translation of concept into reality. Nothing is adjusted at the end; it arrives resolved, considered, and complete.',
   },
 ]
 
 const HowWeWork = () => {
-  const ref = useRef(null)
-  const isInView = useInView(ref, { once: true, margin: '-100px' })
-
-  const containerVariants: Variants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-        delayChildren: 0.1,
-      },
-    },
-  }
-
-  const itemVariants: Variants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.6,
-        ease: [0.25, 0.1, 0.25, 1],
-      },
-    },
-  }
-
-  const imageVariants: Variants = {
-    hidden: { opacity: 0, scale: 0.95 },
-    visible: {
-      opacity: 1,
-      scale: 1,
-      transition: {
-        duration: 0.8,
-        ease: [0.25, 0.1, 0.25, 1],
-      },
-    },
-  }
-
-  const workItemVariants: Variants = {
-    hidden: { opacity: 0, x: -20 },
-    visible: {
-      opacity: 1,
-      x: 0,
-      transition: {
-        duration: 0.5,
-        ease: [0.25, 0.1, 0.25, 1],
-      },
-    },
-  }
-
-  const decorativeImageVariants: Variants = {
-    hidden: { opacity: 0, scale: 0.8, rotate: -5 },
-    visible: {
-      opacity: 1,
-      scale: 1,
-      rotate: 0,
-      transition: {
-        duration: 0.7,
-        ease: [0.25, 0.1, 0.25, 1],
-        delay: 1,
-      },
-    },
-  }
+  const [openIndex, setOpenIndex] = useState<number | null>(null)
+  const open = openIndex === null ? null : STEPS[openIndex]
 
   return (
-    <section id="services" ref={ref} className="bg-white py-16 md:py-[120px]">
-      <Container>
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate={isInView ? 'visible' : 'hidden'}
-          className="flex flex-col items-center gap-16"
-        >
-          <motion.div
-            variants={itemVariants}
-            className="flex max-w-[830px] flex-col items-center gap-4 md:gap-6"
-          >
-            <motion.p
-              variants={itemVariants}
-              className="text-[16px] leading-[20px] font-bold tracking-[-0.32px] text-[rgba(124,104,88,0.7)] uppercase"
-            >
-              How We Work
-            </motion.p>
-            <motion.h2
-              variants={itemVariants}
-              className="text-center text-[24px] leading-[32px] font-bold tracking-[-0.84px] text-black uppercase md:text-[40px] md:leading-[46px]"
-            >
-              From Vision to Structure
-            </motion.h2>
-          </motion.div>
+    <section id="process" className="bg-brand-white py-section md:py-section-lg scroll-mt-24">
+      <Container className="flex flex-col gap-12">
+        <SectionHeading
+          label="Our Process"
+          heading="Defined by"
+          accent="Precision"
+          body="A structured methodology shaped by clarity of thought and disciplined execution."
+        />
 
-          <motion.div
-            variants={imageVariants}
-            whileHover={{ scale: 1.02 }}
-            transition={{ duration: 0.3 }}
-            className="relative h-[418px] w-full overflow-hidden rounded-[32px] bg-[#eae5e0] md:h-[600px]"
-          >
-            <motion.div
-              initial={{ y: 20 }}
-              animate={isInView ? { y: 0 } : { y: 20 }}
-              transition={{
-                duration: 1,
-                ease: [0.25, 0.1, 0.25, 1],
-              }}
-              className="relative h-full w-full"
-            >
-              <Image
-                src="/how-we-work-3d.webp"
-                alt="3D architectural visualization"
-                fill
-                className="object-cover"
-                sizes="100vw"
-                priority
-              />
-              <div className="absolute inset-0 bg-[#eae5e0] mix-blend-soft-light" />
-            </motion.div>
-          </motion.div>
+        <div className="flex flex-col">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {STEPS.map((step, i) => {
+              const isOpen = openIndex === i
 
-          <div className="relative w-full">
-            {workItems.map((item, index) => (
-              <motion.div
-                key={item.number}
-                variants={workItemVariants}
-                custom={index}
-                initial="hidden"
-                animate={isInView ? 'visible' : 'hidden'}
-                transition={{ delay: 0.6 + index * 0.15 }}
-                whileHover={{
-                  x: 4,
-                  transition: { duration: 0.2 },
-                }}
-                className="relative flex cursor-pointer gap-5 border-t border-[rgba(124,104,88,0.5)] pt-6 pb-16 md:gap-5 md:pb-[92px]"
-              >
-                <motion.div
-                  className="min-w-[24px] text-[16px] leading-[20px] font-medium text-[#7c6858] md:flex-1"
-                  whileHover={{ scale: 1.1 }}
-                  transition={{ duration: 0.2 }}
+              return (
+                <button
+                  key={step.label}
+                  onClick={() => setOpenIndex(isOpen ? null : i)}
+                  aria-expanded={isOpen}
+                  className={cn(
+                    'group rounded-brand border-brand-line flex flex-col gap-3 border p-6 text-left transition-colors duration-300',
+                    isOpen
+                      ? 'border-brand-brown bg-brand-brown text-brand-white'
+                      : 'text-brand-black hover:border-brand-brown hover:bg-brand-brown hover:text-brand-white',
+                  )}
                 >
-                  {item.number}
-                </motion.div>
-
-                <div className="flex w-[234px] flex-col gap-2.5 md:w-auto md:flex-1">
-                  <motion.h3
-                    className="text-[20px] leading-[25px] tracking-[-0.5px] text-black md:text-[24px]"
-                    whileHover={{ x: 2 }}
-                    transition={{ duration: 0.2 }}
+                  <span
+                    className={cn(
+                      'h1-label transition-colors duration-300',
+                      isOpen
+                        ? 'text-brand-white/80'
+                        : 'text-brand-brown group-hover:text-brand-white/80',
+                    )}
                   >
-                    {item.title}
-                  </motion.h3>
-                  <p className="text-[16px] leading-[20px] text-black md:hidden">
-                    {item.description}
+                    {step.label}
+                  </span>
+                  <span className="h2-display !text-[clamp(19px,1.7vw,24px)]">{step.summary}</span>
+                </button>
+              )
+            })}
+          </div>
+
+          {/* The expanded panel spans the full row. */}
+          <AnimatePresence initial={false}>
+            {open ? (
+              <motion.div
+                key={openIndex}
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.35, ease: 'easeInOut' }}
+                className="overflow-hidden"
+              >
+                <div className="rounded-brand border-brand-line mt-4 border bg-[#faf8f7] p-8">
+                  <p className="h1-label text-brand-brown mb-3">{open.label}</p>
+                  <p className="text-brand-muted max-w-[820px] text-[15px] leading-relaxed">
+                    {open.detail}
                   </p>
                 </div>
-
-                <div className="hidden md:block md:max-w-[370px] md:flex-1">
-                  <p className="text-[16px] leading-[20px] text-black">{item.description}</p>
-                </div>
-
-                {item.number === '02' && (
-                  <>
-                    <motion.div
-                      variants={decorativeImageVariants}
-                      initial="hidden"
-                      animate={isInView ? 'visible' : 'hidden'}
-                      className="absolute -top-5 left-16 z-50 hidden h-[144px] w-[224px] overflow-hidden rounded-[23px] shadow-lg md:block"
-                    >
-                      <Image
-                        src="/how-we-work-wood.webp"
-                        alt="Wood texture"
-                        fill
-                        className="object-cover"
-                        sizes="224px"
-                      />
-                    </motion.div>
-
-                    <motion.div
-                      variants={decorativeImageVariants}
-                      initial="hidden"
-                      animate={isInView ? 'visible' : 'hidden'}
-                      transition={{ delay: 1.1 }}
-                      className="absolute top-5 left-[116px] z-50 hidden h-[144px] w-[224px] overflow-hidden rounded-[23px] shadow-lg md:block"
-                    >
-                      <Image
-                        src="/how-we-work-marble.webp"
-                        alt="Marble texture"
-                        fill
-                        className="object-cover"
-                        sizes="224px"
-                      />
-                    </motion.div>
-                  </>
-                )}
               </motion.div>
-            ))}
-          </div>
-        </motion.div>
+            ) : null}
+          </AnimatePresence>
+        </div>
       </Container>
     </section>
   )

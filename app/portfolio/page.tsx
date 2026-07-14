@@ -1,20 +1,28 @@
-import HeroProjects from "@/components/heroProjects/HeroProjects";
-import ImaginationHero from "@/components/imagination-hero/ImaginationHero";
-import Portfolio from "@/components/portfolio/Portfolio";
-import { Metadata } from 'next';
+import type { Metadata } from 'next'
+import PageHero from '@/components/ui/PageHero'
+import Portfolio from '@/components/portfolio/Portfolio'
+import CtaSection from '@/components/cta/CtaSection'
 
 export const metadata: Metadata = {
-  title: 'Portfolio'
+  title: 'Portfolio',
+  description:
+    'A curated body of work across Dubai — private residences, villas, and commercial environments by Epasero Contracting.',
 }
 
-const ProjectsPage = () => {
-  return (
-    <>
-      <HeroProjects />
-      <Portfolio />
-      <ImaginationHero />
-    </>
-  );
-};
+/**
+ * Spec §5. The hero image should be the supplied "Portfolio Hero Image"; until
+ * that arrives this reuses the existing portfolio background.
+ */
+const PortfolioPage = () => (
+  <main>
+    <PageHero
+      heading="We Shape the Feeling of Space"
+      image="/hero-portfolio-bg.webp"
+      caption={'Private Residence, Palm Jumeirah\n— Contemporary Luxury Interior'}
+    />
+    <Portfolio />
+    <CtaSection />
+  </main>
+)
 
-export default ProjectsPage;
+export default PortfolioPage

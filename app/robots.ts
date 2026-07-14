@@ -1,7 +1,7 @@
-import 'dotenv/config';
-import { MetadataRoute } from 'next';
+import 'dotenv/config'
+import { MetadataRoute } from 'next'
 
-export const dynamic = "force-static";
+export const dynamic = 'force-static'
 
 const BASE_URL = process.env.BASE_URL || 'https://epaserocontracting.com'
 
@@ -14,5 +14,5 @@ export default function robots(): MetadataRoute.Robots {
       },
     ],
     sitemap: `${BASE_URL}/sitemap.xml`,
-  };
+  }
 }

@@ -39,5 +39,5 @@ export const smoothScrollToSection = (
   sectionId?: string,
 ) => {
   if (!sectionId) return
-  waitForElement(e, sectionId, () => scrollToSection(sectionId));
+  waitForElement(e, sectionId, () => scrollToSection(sectionId))
 }

@@ -8,17 +8,20 @@ const LottieLoader = () => {
   const [fadeOut, setFadeOut] = useState(false)
 
   useEffect(() => {
-    const loaderShown = sessionStorage.getItem('loaderShown')
-    if (loaderShown) {
-      setVisible(false)
-      return
+    // Already seen this session — dismiss on the next tick rather than setting
+    // state synchronously here, which would trigger a cascading re-render.
+    if (sessionStorage.getItem('loaderShown')) {
+      const skip = setTimeout(() => setVisible(false), 0)
+      return () => clearTimeout(skip)
     }
 
     document.body.style.overflow = 'hidden'
 
+    let fadeTimer: ReturnType<typeof setTimeout>
+
     const timer = setTimeout(() => {
       setFadeOut(true)
-      setTimeout(() => {
+      fadeTimer = setTimeout(() => {
         setVisible(false)
         sessionStorage.setItem('loaderShown', 'true')
         document.body.style.overflow = ''
@@ -27,6 +30,7 @@ const LottieLoader = () => {
 
     return () => {
       clearTimeout(timer)
+      clearTimeout(fadeTimer)
       document.body.style.overflow = ''
     }
   }, [])

@@ -1,29 +1,94 @@
 @import 'tailwindcss';
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ---------------------------------------------------------------------------
+   Epasero design system
+   Palette: brown + white + black (spec §1.2).
+   Type:    H1 = Courier, used as a letter-spaced label/kicker
+            H2 = Cormorant Garamond, display serif
+            Body / UI = Segoe UI stack
+   ------------------------------------------------------------------------ */
+
+@theme {
+  --color-brand-brown: #9c5b4b;
+  --color-brand-brown-dark: #8c5143; /* ~10% darker — hover state */
+  --color-brand-black: #000000;
+  --color-brand-white: #ffffff;
+
+  /* Hairlines and muted body copy */
+  --color-brand-line: #e5e0dd;
+  --color-brand-muted: #5c5551;
+
+  /* Segoe UI is Windows-only and Microsoft-licensed: it cannot legally be
+     self-hosted and does not exist on macOS/iOS/Android. Leading with it gives
+     Windows users the intended face; everyone else falls through to a
+     metrically similar neutral sans. */
+  --font-body:
+    'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Roboto, Arial, sans-serif;
+  --font-label: 'Courier New', Courier, monospace;
+
+  /* NOTE: --font-display is deliberately NOT declared here. `@theme` emits into
+     :root, but next/font defines --font-cormorant on <body>. A var() pointing at
+     an undefined variable makes the whole declaration invalid, which silently
+     drops the serif and falls back to sans. It is declared on `body` instead,
+     where --font-cormorant is actually in scope. */
+
+  /* Section rhythm — spec §1.3 wants 80–120px vertical padding */
+  --spacing-section: 80px;
+  --spacing-section-lg: 120px;
+
+  /* Spec §1.3: subtle rounding only (4–8px), never fully circular. The floating
+     WhatsApp button is the one deliberate exception. */
+  --radius-brand: 4px;
+  --radius-brand-lg: 8px;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  /* Declared here, not in @theme — see the note above. */
+  --font-display: var(--font-cormorant), 'Cormorant Garamond', Georgia, serif;
+
+  background: var(--color-brand-white);
+  color: var(--color-brand-black);
+  font-family: var(--font-body);
 }
+
+/* Spec §1.3: every interactive element gets a smooth hover transition. */
+a,
+button {
+  transition: all 0.3s ease;
+}
+
+/* --- Type primitives ---------------------------------------------------- */
+
+/* The small letter-spaced Courier kicker above a heading, e.g. "ABOUT US" */
+.h1-label {
+  font-family: var(--font-label);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+/* The Cormorant display line, e.g. "Curating Elevated Living" */
+.h2-display {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(30px, 4vw, 46px);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+/* The brown italic accent inside an H2, per the About Us reference image */
+.h2-accent {
+  font-style: italic;
+  color: var(--color-brand-brown);
+}
+
+/* --- Swiper overrides (existing portfolio slider) ----------------------- */
 
 .portfolioSlider {
   .swiper-button-prev,

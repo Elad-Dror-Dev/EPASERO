@@ -2,58 +2,48 @@
 
 import { motion } from 'framer-motion'
 import Link from 'next/link'
-import Image from 'next/image'
+import { MapPin } from 'lucide-react'
 import { PortfolioProject } from './types'
 import PortfolioImageSlider from '../reuse/PortfolioImageSlider'
 import { categoryLabels } from '@/data/data'
 
-interface PortfolioCardProps {
-  project: PortfolioProject
-}
-
-export default function PortfolioCard({ project }: PortfolioCardProps) {
+/**
+ * The shared "box style" card. Spec §5.2 and §6.2 require the portfolio and
+ * journal grids to reuse exactly this, so it stays generic.
+ *
+ * Radius is 8px (spec §1.3: 4–8px, no fully-rounded shapes) — the previous 32px
+ * pill did not fit the brand.
+ */
+export default function PortfolioCard({ project }: { project: PortfolioProject }) {
   return (
     <Link href={`/portfolio/${project.slug}`} prefetch className="block h-full">
-      <motion.div
+      <motion.article
         initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
-        className="group/main h-full cursor-pointer overflow-hidden rounded-[32px] border border-[#eae5e0] bg-white transition-shadow duration-300 hover:shadow-xl"
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: '-40px' }}
+        transition={{ duration: 0.6, ease: 'easeOut' }}
+        className="group rounded-brand-lg border-brand-line bg-brand-white hover:border-brand-brown h-full overflow-hidden border transition-all duration-300 hover:shadow-lg"
       >
         <div className="relative">
           <PortfolioImageSlider project={project} />
-          <motion.div
-            initial={{ opacity: 0.9 }}
-            transition={{ duration: 0.2 }}
-            className="absolute top-4 left-4 z-10 rounded-[10px] border border-[rgba(124,104,88,0.3)] bg-white/90 px-4 py-1.5 backdrop-blur-[25px] md:top-6 md:left-6 md:px-[21px] md:py-2"
-          >
-            <p className="text-xs leading-[16.8px] font-normal text-[#7c6858] uppercase md:text-sm">
+          <div className="rounded-brand bg-brand-white/90 absolute top-4 left-4 z-10 px-3 py-1.5 backdrop-blur-sm">
+            <span className="h1-label text-brand-brown !text-[11px]">
               {categoryLabels[project.category]}
-            </p>
-          </motion.div>
+            </span>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 p-6">
-          <h3 className="text-2xl leading-6 font-bold tracking-[-0.48px] text-black transition-colors duration-300 group-hover/main:text-[#7c6858]">
+
+        <div className="flex flex-col gap-3 p-6">
+          <h3 className="h2-display text-brand-black group-hover:text-brand-brown !text-[22px] transition-colors duration-300">
             {project.title}
           </h3>
 
-          <div className="flex items-center gap-[6px]">
-            <div className="h-5 w-5 shrink-0">
-              <Image
-                src="/pin.svg"
-                alt="Location pin"
-                width={20}
-                height={20}
-                className="h-full w-full"
-              />
-            </div>
-
-            <p className="flex-1 text-sm leading-[16.8px] text-[#7c6858] uppercase">
-              {project.location}
-            </p>
-          </div>
+          <p className="text-brand-muted flex items-center gap-2 text-xs tracking-[0.08em] uppercase">
+            <MapPin size={14} className="text-brand-brown shrink-0" />
+            {project.location}
+          </p>
         </div>
-      </motion.div>
+      </motion.article>
     </Link>
   )
 }

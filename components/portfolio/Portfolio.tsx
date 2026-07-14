@@ -3,6 +3,7 @@
 import { useState, useMemo, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Container from '@/components/container/Container'
+import SectionHeading from '@/components/ui/SectionHeading'
 import PortfolioCard from './PortfolioCard'
 import Pagination from './Pagination'
 import { PortfolioCategory, PortfolioCategoryTab } from './types'
@@ -54,9 +55,13 @@ export default function Portfolio() {
     <section ref={portfolioTopRef} className="w-full bg-white py-[120px]">
       <Container className="flex flex-col gap-16">
         <div className="flex flex-col items-center gap-11">
-          <h2 className="text-center text-[40px] leading-[46px] font-bold tracking-[-0.84px] text-black uppercase">
-            Our Portfolio
-          </h2>
+          <SectionHeading
+            label="Our Portfolio"
+            heading="Spaces That"
+            accent="Define Themselves"
+            body="From private residences in Dubai's most coveted addresses to distinguished commercial environments, each project is shaped by a singular design language, and finished to a standard that speaks for itself."
+            align="center"
+          />
 
           <div className="relative w-full">
             <div className="mr-[-1rem] flex flex-col overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] md:mr-[0] md:w-auto md:flex-row md:items-end md:border-b md:border-[#a59e8c] [&::-webkit-scrollbar]:hidden">
@@ -73,7 +78,7 @@ export default function Portfolio() {
                       <motion.p
                         initial={false}
                         animate={{
-                          color: isActive ? '#000000' : '#7c6858',
+                          color: isActive ? '#000000' : '#9c5b4b',
                           opacity: isActive ? 1 : 0.5,
                         }}
                         transition={{ duration: 0.2 }}
@@ -85,7 +90,7 @@ export default function Portfolio() {
                       {isActive && (
                         <motion.div
                           layoutId="activePortfolioTab"
-                          className="absolute right-0 bottom-0 left-0 h-px bg-[#7c6858]"
+                          className="absolute right-0 bottom-0 left-0 h-px bg-[#9c5b4b]"
                           transition={{
                             type: 'spring',
                             stiffness: 500,
@@ -99,7 +104,7 @@ export default function Portfolio() {
                           initial={{ scaleX: 0 }}
                           whileHover={{ scaleX: 1 }}
                           transition={{ duration: 0.2 }}
-                          className="absolute right-0 bottom-0 left-0 h-px origin-left bg-[#7c6858] opacity-30"
+                          className="absolute right-0 bottom-0 left-0 h-px origin-left bg-[#9c5b4b] opacity-30"
                         />
                       )}
                     </button>

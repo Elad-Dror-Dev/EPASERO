@@ -1,16 +1,15 @@
-import { PortfolioProject } from "@/components/portfolio/types";
-import PropertyHero from "@/components/property-hero/PropertyHero";
-import PropertyDetails from "@/components/property-details/PropertyDetails";
-import GetInspired from "@/components/get-inspired";
-import ImaginationHero from "@/components/imagination-hero/ImaginationHero";
-import { categoryLabels, portfolioProjects } from '@/data/data';
-import { notFound } from 'next/navigation';
-import { Metadata } from 'next';
+import { PortfolioProject } from '@/components/portfolio/types'
+import PropertyHero from '@/components/property-hero/PropertyHero'
+import PropertyDetails from '@/components/property-details/PropertyDetails'
+import CtaSection from '@/components/cta/CtaSection'
+import { categoryLabels, portfolioProjects } from '@/data/data'
+import { notFound } from 'next/navigation'
+import { Metadata } from 'next'
 
 export async function generateStaticParams() {
   return portfolioProjects.map((project: PortfolioProject) => ({
     slug: project.slug,
-  }));
+  }))
 }
 
 export async function generateMetadata(props: {
@@ -31,31 +30,30 @@ export async function generateMetadata(props: {
   }
 }
 
-const DetailsPage = async ({
-  params,
-}: {
-  params: Promise<{ slug: string; language: string }>;
-}) => {
-  const { slug } = await params;
-  const data = portfolioProjects.find(
-    (project: PortfolioProject) => project.slug === slug
-  );
+const DetailsPage = async ({ params }: { params: Promise<{ slug: string; language: string }> }) => {
+  const { slug } = await params
+  const data = portfolioProjects.find((project: PortfolioProject) => project.slug === slug)
 
-  const propertyData = data?.property;
+  const propertyData = data?.property
 
   if (!propertyData) {
-    return notFound();
+    return notFound()
   }
 
-  const propertyDetailsData = propertyData.details;
+  const propertyDetailsData = propertyData.details
   return (
     <main>
-      <PropertyHero {...propertyData} title={data.title} location={data.location} images={data.images} category={categoryLabels[data.category]} />
+      <PropertyHero
+        {...propertyData}
+        title={data.title}
+        location={data.location}
+        images={data.images}
+        category={categoryLabels[data.category]}
+      />
       <PropertyDetails {...propertyDetailsData} />
-      <GetInspired />
-      <ImaginationHero />
+      <CtaSection />
     </main>
   )
-};
+}
 
-export default DetailsPage;
+export default DetailsPage

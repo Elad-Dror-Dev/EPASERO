@@ -1,30 +1,29 @@
 import type { Metadata } from 'next'
-import { Geist, Geist_Mono } from 'next/font/google'
+import { Cormorant_Garamond } from 'next/font/google'
 import './globals.css'
 import Header from '@/components/header/Header'
 import Footer from '@/components/footer/Footer'
+import FloatingWhatsApp from '@/components/whatsapp/FloatingWhatsApp'
+import LeadCaptureModal from '@/components/lead-capture/LeadCaptureModal'
 
-export const revalidate = 3600 // Revalidate every hour
-
-const geistSans = Geist({
-  variable: '--font-geist-sans',
+const cormorant = Cormorant_Garamond({
+  variable: '--font-cormorant',
   subsets: ['latin'],
-})
-
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
-  subsets: ['latin'],
+  weight: ['400', '600'],
+  style: ['normal', 'italic'],
+  display: 'swap',
 })
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://epaserocontracting.com'),
   title: {
     template: '%s | Epasero Contracting',
     default: 'Epasero Contracting',
   },
   description:
-    'Epasero specializes in creating spaces that reflect your story, built to last. We design the feeling of living.',
+    'Epasero delivers bespoke interiors, renovation, fit-out, and landscaping projects across Dubai. Where design meets custom-made functionality.',
   openGraph: {
-    images: ['https://epaserocontracting.com/og-image.webp'],
+    images: ['/og-image.webp'],
   },
 }
 
@@ -35,10 +34,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body className={`${cormorant.variable} antialiased`}>
         <Header />
         {children}
         <Footer />
+        <FloatingWhatsApp />
+        <LeadCaptureModal />
       </body>
     </html>
   )

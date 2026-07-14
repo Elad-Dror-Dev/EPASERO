@@ -1,23 +1,24 @@
 import Hero from '@/components/hero/Hero'
-import TailoredSolutions from '@/components/tailored-solutions/TailoredSolutions'
-import GetInspired from '@/components/get-inspired'
-import HowWeWork from '@/components/how-we-work/HowWeWork'
-import RealPeopleSpaces from '@/components/real-people-spaces/RealPeopleSpaces'
 import AboutUs from '@/components/about-us/AboutUs'
-import ImaginationHero from '@/components/imagination-hero/ImaginationHero'
+import Services from '@/components/services/Services'
+import HowWeWork from '@/components/how-we-work/HowWeWork'
+import PortfolioPreview from '@/components/portfolio-preview/PortfolioPreview'
+import ClientStories from '@/components/client-stories/ClientStories'
+import CtaSection from '@/components/cta/CtaSection'
 import LottieLoader from '@/components/LottieLoader/LottieLoader'
 
+/** Section order follows spec §4.2 – §4.9. */
 export default function Home() {
   return (
-    <main className="">
+    <main>
       <LottieLoader />
       <Hero />
-      <TailoredSolutions />
-      <GetInspired />
-      <HowWeWork />
-      <RealPeopleSpaces />
       <AboutUs />
-      <ImaginationHero />
+      <Services />
+      <HowWeWork />
+      <PortfolioPreview />
+      <ClientStories />
+      <CtaSection />
     </main>
   )
 }
